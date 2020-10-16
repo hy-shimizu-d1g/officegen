@@ -3,8 +3,6 @@ var officegen = require('../')
 
 var fs = require('fs')
 var path = require('path')
-const { result } = require('lodash')
-const { doc } = require('prettier')
 
 var outDir = path.join(__dirname, '../tmp/')
 
@@ -101,8 +99,6 @@ pObj.addImage(path.resolve(__dirname, 'images_for_examples/sword_002.png'))
 pObj.addImage(path.resolve(__dirname, 'images_for_examples/sword_003.png'))
 pObj.addText('... some text here ...', { font_face: 'Arial' })
 pObj.addImage(path.resolve(__dirname, 'images_for_examples/sword_004.png'))
-
-pObj = docx.createP()
 
 pObj.addImage(path.resolve(__dirname, 'images_for_examples/image1.png'))
 
@@ -248,7 +244,7 @@ async.series(
       return omml
     }
   ],
-  (err, result) => {
+  (result) => {
     result.forEach((value, index) => {
       docx.createMath(value)
     })
