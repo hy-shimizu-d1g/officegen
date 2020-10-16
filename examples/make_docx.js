@@ -246,7 +246,7 @@ async.series(
   ],
   (result) => {
     result.forEach((value, index) => {
-      docx.createMath(value)
+      docx.createObject(value)
     })
     var out = fs.createWriteStream(path.join(outDir, 'example.docx'))
     async.parallel(
