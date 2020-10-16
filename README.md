@@ -1,15 +1,20 @@
+# officegen_math
+
+- This library is a fork from officegen.
+- It has partial support for math objects.
+
 # officegen
 
 Creating Office Open XML files (Word, Excel and Powerpoint) for Microsoft Office 2007 and later without external tools, just pure Javascript.
-*officegen* should work on any environment that supports Node.js including Linux, OSX and Windows.
-*officegen* also supporting PowerPoint *native* charts objects with embedded data.
+_officegen_ should work on any environment that supports Node.js including Linux, OSX and Windows.
+_officegen_ also supporting PowerPoint _native_ charts objects with embedded data.
 
 [![npm version](https://badge.fury.io/js/officegen.svg)](https://badge.fury.io/js/officegen)
-[![dependencies](https://david-dm.org/Ziv-Barber/officegen.svg?style&#x3D;flat-square)](https://david-dm.org/Ziv-Barber/officegen)
-[![devDependencies](https://david-dm.org/Ziv-Barber/officegen/dev-status.svg?style&#x3D;flat-square)](https://david-dm.org/Ziv-Barber/officegen#info&#x3D;devDependencies)
+[![dependencies](https://david-dm.org/Ziv-Barber/officegen.svg?style=flat-square)](https://david-dm.org/Ziv-Barber/officegen)
+[![devDependencies](https://david-dm.org/Ziv-Barber/officegen/dev-status.svg?style=flat-square)](https://david-dm.org/Ziv-Barber/officegen#info=devDependencies)
 [![Build Status](https://travis-ci.org/Ziv-Barber/officegen.png?branch=master)](https://travis-ci.org/Ziv-Barber/officegen)
-[![Join the chat at https://gitter.im/officegen/Lobby](https://badges.gitter.im/officegen/Lobby.svg)](https://gitter.im/officegen/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
-[![Backers on Open Collective](https://opencollective.com/officegen/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/officegen/sponsors/badge.svg)](#sponsors) 
+[![Join the chat at https://gitter.im/officegen/Lobby](https://badges.gitter.im/officegen/Lobby.svg)](https://gitter.im/officegen/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Backers on Open Collective](https://opencollective.com/officegen/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/officegen/sponsors/badge.svg)](#sponsors)
 
 ![Officegen logo](logo.png)
 ![Microsoft Office logo](logo_office.png)
@@ -32,7 +37,8 @@ Creating Office Open XML files (Word, Excel and Powerpoint) for Microsoft Office
 This project exists thanks to all the people who contribute.
 
 <a name="getstart"></a>
-## Getting Started: ##
+
+## Getting Started:
 
 ![Microsoft Powerpoint logo](logo_powerpoint.png)
 ![Microsoft Word logo](logo_word.png)
@@ -63,6 +69,7 @@ This project exists thanks to all the people who contribute.
   - Create Excel document with one or more sheets. Supporting cells with either numbers or strings.
 
 <a name="install"></a>
+
 ### Installation:
 
 ```bash
@@ -70,6 +77,7 @@ $ npm install officegen
 ```
 
 <a name="getspptx"></a>
+
 ### Microsoft PowerPoint basic usage example:
 
 ```js
@@ -88,21 +96,34 @@ let slide = pptx.makeTitleSlide('Officegen', 'Example to a PowerPoint document')
 slide = pptx.makeNewSlide()
 slide.name = 'Pie Chart slide'
 slide.back = 'ffff00'
-slide.addChart(
-  {
-    title: 'My production',
-    renderType: 'pie',
-    data:
-	[
-      {
-        name: 'Oil',
-        labels: ['Czech Republic', 'Ireland', 'Germany', 'Australia', 'Austria', 'UK', 'Belgium'],
-        values: [301, 201, 165, 139, 128,  99, 60],
-        colors: ['ff0000', '00ff00', '0000ff', 'ffff00', 'ff00ff', '00ffff', '000000']
-      }
-    ]
-  }
-)
+slide.addChart({
+  title: 'My production',
+  renderType: 'pie',
+  data: [
+    {
+      name: 'Oil',
+      labels: [
+        'Czech Republic',
+        'Ireland',
+        'Germany',
+        'Australia',
+        'Austria',
+        'UK',
+        'Belgium'
+      ],
+      values: [301, 201, 165, 139, 128, 99, 60],
+      colors: [
+        'ff0000',
+        '00ff00',
+        '0000ff',
+        'ffff00',
+        'ff00ff',
+        '00ffff',
+        '000000'
+      ]
+    }
+  ]
+})
 
 // Let's generate the PowerPoint document into a file:
 
@@ -110,17 +131,17 @@ return new Promise((resolve, reject) => {
   let out = fs.createWriteStream('example.pptx')
 
   // This one catch only the officegen errors:
-  pptx.on('error', function(err) {
+  pptx.on('error', function (err) {
     reject(err)
   })
 
   // Catch fs errors:
-  out.on('error', function(err) {
+  out.on('error', function (err) {
     reject(err)
   })
 
   // End event after creating the PowerPoint file:
-  out.on('close', function() {
+  out.on('close', function () {
     resolve()
   })
 
@@ -209,6 +230,7 @@ http.createServer(function(req, res) {
 - For some examples please [click here](#examples).
 
 <a name="getspptx"></a>
+
 ### Microsoft Word basic usage example:
 
 ```js
@@ -219,14 +241,12 @@ const fs = require('fs')
 let docx = officegen('docx')
 
 // Officegen calling this function after finishing to generate the docx document:
-docx.on('finalize', function(written) {
-  console.log(
-    'Finish to create a Microsoft Word document.'
-  )
+docx.on('finalize', function (written) {
+  console.log('Finish to create a Microsoft Word document.')
 })
 
 // Officegen calling this function to report errors:
-docx.on('error', function(err) {
+docx.on('error', function (err) {
   console.log(err)
 })
 
@@ -296,7 +316,7 @@ pObj.addImage('some-image.png')
 
 let out = fs.createWriteStream('example.docx')
 
-out.on('error', function(err) {
+out.on('error', function (err) {
   console.log(err)
 })
 
@@ -310,6 +330,7 @@ docx.generate(out)
 - For some examples please [click here](#examples).
 
 <a name="getspptx"></a>
+
 ### Microsoft Excel basic usage example:
 
 ```js
@@ -320,14 +341,12 @@ const fs = require('fs')
 let xlsx = officegen('xlsx')
 
 // Officegen calling this function after finishing to generate the xlsx document:
-xlsx.on('finalize', function(written) {
-  console.log(
-    'Finish to create a Microsoft Excel document.'
-  )
+xlsx.on('finalize', function (written) {
+  console.log('Finish to create a Microsoft Excel document.')
 })
 
 // Officegen calling this function to report errors:
-xlsx.on('error', function(err) {
+xlsx.on('error', function (err) {
   console.log(err)
 })
 
@@ -360,7 +379,7 @@ sheet.data[6][2] = 1972
 
 let out = fs.createWriteStream('example.xlsx')
 
-out.on('error', function(err) {
+out.on('error', function (err) {
   console.log(err)
 })
 
@@ -374,9 +393,11 @@ xlsx.generate(out)
 - For some examples please [click here](#examples).
 
 <a name="support"></a>
+
 ## Support:
 
 <a name="examples"></a>
+
 ### Examples:
 
 - [make_pptx.js](examples/make_pptx.js) - Example how to create PowerPoint 2007 presentation and save it into file.
@@ -394,9 +415,10 @@ xlsx.generate(out)
 
 ### Plans for the next release:
 
-[Trello](<https://trello.com/b/dkaiSGir/officegen-make-office-documents-in-javascript>)
+[Trello](https://trello.com/b/dkaiSGir/officegen-make-office-documents-in-javascript)
 
 <a name="code"></a>
+
 ## :coffee: The source code:
 
 ### The project structure:
@@ -409,9 +431,9 @@ xlsx.generate(out)
   - genpptx.js - A document generator (basicgen plugin) to create a PPTX/PPSX document.
   - genxlsx.js - A document generator (basicgen plugin) to create a XLSX document.
   - gendocx.js - A document generator (basicgen plugin) to create a DOCX document.
-  - pptxplg-*.js - docplug based plugins for genpptx.js ONLY to implement Powerpoint based features.
-  - docxplg-*.js - docplug based plugins for genpptx.js ONLY to implement Word based features.
-  - xlsxplg-*.js - docplug based plugins for genpptx.js ONLY to implement Excel based features.
+  - pptxplg-\*.js - docplug based plugins for genpptx.js ONLY to implement Powerpoint based features.
+  - docxplg-\*.js - docplug based plugins for genpptx.js ONLY to implement Word based features.
+  - xlsxplg-\*.js - docplug based plugins for genpptx.js ONLY to implement Excel based features.
 - officegen/test/ - All the unit tests.
 - Gruntfile.js - Grunt scripts.
 
@@ -437,19 +459,22 @@ This project is using the following awesome libraries/utilities/services:
 The easiest way to add new features is by using the officegen internal [plugins system](manual/advanced/plugins/README.md).
 
 <a name="credits"></a>
+
 ## Credit:
 
 - Created by Ziv Barber in 2013.
 - For creating zip streams i'm using 'archiver' by cmilhench, dbrockman, paulj originally inspired by Antoine van Wel's zipstream.
 
 <a name="contributors"></a>
+
 ## Contributors:
 
-This project exists thanks to all the people who contribute. 
+This project exists thanks to all the people who contribute.
 
 <a href="https://github.com/Ziv-Barber/officegen/graphs/contributors"><img src="https://opencollective.com/officegen/contributors.svg?width=890&button=false" /></a>
 
 <a name="backers"></a>
+
 ## Backers:
 
 Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/officegen#backer)]
@@ -457,6 +482,7 @@ Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com
 <a href="https://opencollective.com/officegen#backers" target="_blank"><img src="https://opencollective.com/officegen/backers.svg?width=890"></a>
 
 <a name="sponsors"></a>
+
 ## Sponsors:
 
 Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/officegen#sponsor)]
