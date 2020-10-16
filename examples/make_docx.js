@@ -3,6 +3,8 @@ var officegen = require('../')
 
 var fs = require('fs')
 var path = require('path')
+const { result } = require('lodash')
+const { doc } = require('prettier')
 
 var outDir = path.join(__dirname, '../tmp/')
 
@@ -22,7 +24,6 @@ var docx = officegen({
 docx.on('error', function (err) {
   console.log(err)
 })
-
 var pObj = docx.createP()
 
 pObj.addText('Simple')
@@ -232,25 +233,67 @@ var tableStyle = {
 
 pObj = docx.createTable(table, tableStyle)
 
-var out = fs.createWriteStream(path.join(outDir, 'example.docx'))
+var mathSample = [
+  'y = x * 2',
+  '\\frac{\\pi}{2} = \\left( \\int_{0}^{\\infty} \\frac{\\sin x}{\\sqrt{x}} dx \\right)^2 =\\sum_{k=0}^{\\infty} \\frac{(2k)!}{2^{2k}(k!)^2} \\frac{1}{2k+1} =\\prod_{k=1}^{\\infty} \\frac{4k^2}{4k^2 - 1}'
+]
 
-out.on('error', function (err) {
-  console.log(err)
-})
-
-async.parallel(
+async.series(
   [
-    function (done) {
-      out.on('close', function () {
-        console.log('Finish to create a DOCX file.')
-        done(null)
-      })
-      docx.generate(out)
+    async function (done) {
+      var mml = await docx.tex2mml(mathSample[1])
+      // console.log(mml)
+      var omml = await docx.mml2omml(mml)
+      // console.log(omml)
+      return omml
     }
   ],
-  function (err) {
-    if (err) {
-      console.log('error: ' + err)
-    } // Endif.
+  (err, result) => {
+    result.forEach((value, index) => {
+      docx.createMath(value)
+    })
+    var out = fs.createWriteStream(path.join(outDir, 'example.docx'))
+    async.parallel(
+      [
+        function (done) {
+          out.on('close', function () {
+            console.log('Finish to create a DOCX file.')
+            done(null)
+          })
+          docx.generate(out)
+        }
+      ],
+      function (err) {
+        if (err) {
+          console.log('error: ' + err)
+        } // Endif.
+      }
+    )
   }
+  // function (result) {
+  //   console.log(result)
+  //   docx.createMath(result, {})
+
+  //   out.on('error', function (err) {
+  //     console.log(err)
+  //   })
+
+  //   async.parallel(
+  //     [
+  //       function (done) {
+  //         out.on('close', function () {
+  //           console.log('Finish to create a DOCX file.')
+  //           done(null)
+  //         })
+  //         docx.generate(out)
+  //       }
+  //     ],
+  //     function (err) {
+  //       if (err) {
+  //         console.log('error: ' + err)
+  //       } // Endif.
+  //     }
+  //   )
+  // }
 )
+// pObj = docx.createMath()
