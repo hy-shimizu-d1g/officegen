@@ -59,19 +59,19 @@ async.series(
         var index = i
         if (val.match(/^\\/)) {
           var omml = await makeOmml(val)
-          docx.createObject(omml)
+          pObj.addMath(omml.replace(/\<\?.*?\n/, ''))
         } else if (val.match(/\$\\/)) {
           var omm = await makeOmml(val)
-          docx.createObject(omml)
-          //   var split = docTextData[key].split(/\$/);
-          //   for (var i = 0; i < split.length; i++) {
-          //     if (split[i].mathch(/^\\/)) {
-          //       var omml = await makeOmml(split[i])
-          //       docx.createObject(omml)
-          //     } else {
-          //       pObj.addText(split[i]);
-          //     }
-          //   }
+          var split = val.split(/\$/)
+          console.log(split)
+          for (var t = 0; t < split.length; t++) {
+            if (split[t].match(/^\\/)) {
+              var inlineOmml = await makeOmml(split[i])
+              pObj.addMath(inlineOmml.replace(/\<\?.*?\n/, ''))
+            } else {
+              pObj.addText(split[t])
+            }
+          }
         } else {
           pObj.addText(val)
         }

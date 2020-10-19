@@ -3,7 +3,7 @@
   "description": "Office Open XML Generator using Node.js streams. Supporting Microsoft Office 2007 and later Word (docx), PowerPoint (pptx,ppsx) and Excell (xlsx). This module is for all frameworks and environments. No need for any commandline tool - this module is doing everything inside it.",
   "version": "0.1.0",
   "author": {
-    "name":"hayato-SMZ",
+    "name": "hayato-SMZ",
     "url": "https://github.com/hayato-SMZ/"
   },
   "private": true,
@@ -66,6 +66,7 @@
     "node1-libxmljsmt": "^1.0.0",
     "readable-stream": "~3.6.0",
     "setimmediate": "~1.0.5",
+    "xml2json": "^0.12.0",
     "xmlbuilder": "^15.1.0"
   },
   "devDependencies": {
