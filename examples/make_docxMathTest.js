@@ -4,6 +4,7 @@ var officegen = require('../')
 var fs = require('fs')
 var path = require('path')
 const { doc } = require('prettier')
+const { column } = require('../lib/pptx/charts')
 
 var outDir = path.join(__dirname, '../tmp/')
 
@@ -12,7 +13,9 @@ var outDir = path.join(__dirname, '../tmp/')
 var docx = officegen({
   type: 'docx',
   orientation: 'portrait',
-  pageMargins: { top: 1000, left: 1000, bottom: 1000, right: 1000 }
+  author: 'hy-shimizu',
+  pageMargins: { top: 1000, left: 1000, bottom: 1000, right: 1000 },
+  columns: 2
   // The theme support is NOT working yet...
   // themeXml: themeXml
 })
@@ -29,7 +32,8 @@ var docTextData = {
   contents: [
     'first Contents \nsecond line',
     '\\frac{\\pi}{2} = \\left( \\int_{0}^{\\infty} \\frac{\\sin x}{\\sqrt{x}} dx \\right)^2 =\\sum_{k=0}^{\\infty} \\frac{(2k)!}{2^{2k}(k!)^2} \\frac{1}{2k+1} =\\prod_{k=1}^{\\infty} \\frac{4k^2}{4k^2 - 1}',
-    'inline math $\\frac{t}{y}$'
+    'inline math $\\frac{\\pi}{2} = \\left( \\int_{0}^{\\infty} \\frac{\\sin x}{\\sqrt{x}} dx \\right)^2 =\\sum_{k=0}^{\\infty} \\frac{(2k)!}{2^{2k}(k!)^2} \\frac{1}{2k+1} =\\prod_{k=1}^{\\infty} \\frac{4k^2}{4k^2 - 1}$ テキスト',
+    '日本語も入力は可能$\\frac{\\pi}{2k+1}$'
   ],
   contents2: 'test'
 }
@@ -37,12 +41,6 @@ var makeOmml = async function (tex) {
   var mml = await docx.tex2mml(tex)
   var omml = await docx.mml2omml(mml)
   return omml
-}
-
-const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
-const sleptLog = async (val) => {
-  await sleep(Math.random() * 1000)
-  console.log('sleptLog', val)
 }
 
 async.series(
@@ -61,15 +59,15 @@ async.series(
           var omml = await makeOmml(val)
           pObj.addMath(omml.replace(/\<\?.*?\n/, ''))
         } else if (val.match(/\$\\/)) {
-          var omm = await makeOmml(val)
           var split = val.split(/\$/)
-          console.log(split)
           for (var t = 0; t < split.length; t++) {
             if (split[t].match(/^\\/)) {
-              var inlineOmml = await makeOmml(split[i])
+              var inlineOmml = await makeOmml(split[t])
               pObj.addMath(inlineOmml.replace(/\<\?.*?\n/, ''))
             } else {
-              pObj.addText(split[t])
+              if (split[t] !== '') {
+                pObj.addText(split[t])
+              }
             }
           }
         } else {
@@ -102,7 +100,7 @@ async.series(
   ],
   (err) => {
     console.log(err)
-    var out = fs.createWriteStream(path.join(outDir, 'example.docx'))
+    var out = fs.createWriteStream(path.join(outDir, 'sample.docx'))
     async.parallel(
       [
         function (done) {
