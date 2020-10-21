@@ -2,6 +2,8 @@
 
 - This library is a fork from officegen.
 - It has partial support for math objects.
+- This library uses libxmljs to generate the math objects.
+- Make sure you have met the requirements for [node-gyp](https://github.com/TooTallNate/node-gyp#installation). You DO NOT need to manually install node-gyp; it comes bundled with node.
 
 # officegen
 
@@ -322,6 +324,16 @@ out.on('error', function (err) {
 
 // Async call to generate the output file:
 docx.generate(out)
+
+// Tex to MathML
+let mml = await docx.tex2mml(tex);
+
+// MahML to OMML
+let omml = await docx.mml2omml(mml);
+
+// omath object add
+pObj.addMath(omml);
+
 ```
 
 ### Where to go from here?
