@@ -31,12 +31,13 @@ var docTextData = {
   title: 'this is Math Test Docx',
   contents: [
     'first Contents \nsecond line',
+    '$$image1.emf',
     '\\frac{\\pi}{2} = \\left( \\int_{0}^{\\infty} \\frac{\\sin x}{\\sqrt{x}} dx \\right)^2 =\\sum_{k=0}^{\\infty} \\frac{(2k)!}{2^{2k}(k!)^2} \\frac{1}{2k+1} =\\prod_{k=1}^{\\infty} \\frac{4k^2}{4k^2 - 1}',
     'inline math $\\frac{\\pi}{2} = \\left( \\int_{0}^{\\infty} \\frac{\\sin x}{\\sqrt{x}} dx \\right)^2 =\\sum_{k=0}^{\\infty} \\frac{(2k)!}{2^{2k}(k!)^2} \\frac{1}{2k+1} =\\prod_{k=1}^{\\infty} \\frac{4k^2}{4k^2 - 1}$ テキスト',
     '日本語も入力は可能$\\frac{\\pi}{2k+1}$',
     '\\LaTeX の世界にようこそ！この文章が「dviout」というソフトで閲覧できていれば、インストールに成功しています。'
   ],
-  contents2: 'test',
+  contents2: 'test'
 }
 var makeOmml = async function (tex) {
   var mml = await docx.tex2mml(tex)
@@ -71,6 +72,10 @@ async.series(
               }
             }
           }
+        } else if (val.match(/^$$/)) {
+          var filename = val.replace(/^$$/, '')
+          var filePath = path.join(__dirname, 'images_for_examples', filename)
+          pObj.addImage(filePath, {})
         } else {
           pObj.addText(val)
         }
